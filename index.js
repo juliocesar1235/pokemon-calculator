@@ -1,5 +1,5 @@
 var weight = 0
-let poke_name = document.querySelector("#poke-name")
+let input_name = document.querySelector("#poke-name")
 let weight_total = document.querySelector("#total-value")
 let search_button = document.querySelector("#poke-search")
 let total = document.querySelector("#total-value")
@@ -7,17 +7,16 @@ let total = document.querySelector("#total-value")
 total.textContent = 0
 
 search_button.addEventListener("click", (_) => {
-//   if(poke_name.value != ""){
-//     // item_name.classList.remove("warning")
-//     // item_value.classList.remove("warning")
-       add_item_to_ul(poke_name.value, total);
-//   }else{
-//     item_name.classList.add("warning")
-//     item_value.classList.add("warning")
-//   }
+  if(input_name.value != ""){
+        input_name.classList.remove("warning")
+        add_item_to_ul(input_name.value, total);
+   }else{
+        input_name.classList.add("warning")
+        input_name.classList.add("warning")
+  }
 })
 
-function get_element_li (name, price, total_value, img_url) {
+function get_element_li (name, weight, total_value, img_url) {
   let li = document.createElement('li')
   let poke_name = document.createElement('p')
   let poke_weight = document.createElement('p')
@@ -27,7 +26,7 @@ function get_element_li (name, price, total_value, img_url) {
   //button.classList.add("remove")
   button.innerText = "remove"
   poke_name.textContent = name
-  poke_weight.textContent = price
+  poke_weight.textContent = weight
   image.src = img_url
 
   button.addEventListener("click", (_) => {
@@ -46,7 +45,18 @@ async function get_pokemon(name){
         const res = await axios.get('https://pokeapi.co/api/v2/pokemon/'+ name)
         return res.data
     } catch(e){
-        console.log("error")
+        let div = document.createElement('div')
+        let span = document.createElement('span')
+        let body = document.body
+        div.classList.add("bar")
+        span.classList.add("error")
+        span.addEventListener("click", function () {
+            var bar = this.parentElement
+            bar.parentElement.removeChild(bar)
+        });
+        span.innerText = "Could not find pokemon, please try again with a valid name or id"
+        div.appendChild(span)
+        body.appendChild(div)
     }
 };
 
@@ -54,7 +64,7 @@ function add_item_to_ul(name, total){
   (async () => {
     let poke_data  = await get_pokemon(name)
     weight += parseInt(poke_data.weight,10)
-    let li = get_element_li(poke_data.name,poke_data.weight, total, poke_data.sprites.front_default)
+    let li = get_element_li(poke_data.name, poke_data.weight, total, poke_data.sprites.front_default)
     let ul = document.getElementById("list")
     ul.appendChild(li)
     total.textContent = weight
