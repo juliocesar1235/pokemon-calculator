@@ -17,16 +17,18 @@ search_button.addEventListener("click", (_) => {
 //   }
 })
 
-function get_element_li (name, price, total_value) {
+function get_element_li (name, price, total_value, img_url) {
   let li = document.createElement('li')
-  let poke_name = document.createElement('span')
-  let poke_weight = document.createElement('span')
+  let poke_name = document.createElement('p')
+  let poke_weight = document.createElement('p')
+  let image = document.createElement('img')
   let button = document.createElement('button')
 
   //button.classList.add("remove")
   button.innerText = "remove"
   poke_name.textContent = name
   poke_weight.textContent = price
+  image.src = img_url
 
   button.addEventListener("click", (_) => {
     remove_item(li, total_value)
@@ -34,6 +36,7 @@ function get_element_li (name, price, total_value) {
 
   li.appendChild(poke_name)
   li.appendChild(poke_weight)
+  li.appendChild(image)
   li.appendChild(button);
   return li
 }
@@ -48,11 +51,10 @@ async function get_pokemon(name){
 };
 
 function add_item_to_ul(name, total){
-  let poke_data;
   (async () => {
-    poke_data  = await get_pokemon(name)
+    let poke_data  = await get_pokemon(name)
     weight += parseInt(poke_data.weight,10)
-    let li = get_element_li(poke_data.name,poke_data.weight, total)
+    let li = get_element_li(poke_data.name,poke_data.weight, total, poke_data.sprites.front_default)
     let ul = document.getElementById("list")
     ul.appendChild(li)
     total.textContent = weight
